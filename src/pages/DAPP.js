@@ -27,6 +27,9 @@ class DAPP extends React.Component {
 
      //Calling a blockchain function 
      sNum: 0,
+
+     //Form input state
+     wrapUnwrapToggle: false,
     };
   }
 
@@ -124,10 +127,13 @@ render() {
       Calls the submitVal function
     */
     const submitValHandler = (event) => {
+      //Run logic to determine whether or not the wrapUnwrapToggle is toggled or not
+      //then after that logic call the correct function
        event.preventDefault();
        alert(`The new balance you entered was: ${this.state.sNum}`)
        submitVal(this.state.sNum)
     }
+
     /* submitVal
         Core blockchain interaction function
         First, checks for and loads ethereum
@@ -186,19 +192,39 @@ render() {
          <p>|----------------------------------------------------------------------|</p>
          <h3> Interact with your position: </h3>
          <p> Lord help us all...this part needs work </p>
-          <form onSubmit={submitValHandler}>
+          <form classname='formClass' onSubmit={submitValHandler}>
             <label> Input new balance:
+
+            <br></br> 
+
              <input 
                 type="number" 
                 value= {this.state.sNum}
                 onChange={(e) => this.setState({sNum: e.target.value})}
                />
             </label>
-             <input type="submit" value= "Update Balance"/>
+
+            <br></br>
+            <br></br>
+
+            <label class="switch">
+                 <input type="checkbox"
+                  onChange={(e) => this.setState({wrapUnwrapToggle: !this.state.wrapUnwrapToggle})}
+                 />
+                 <span class="slider"></span>
+              </label>
+
+            <br></br>
+            <br></br>
+             <input 
+             type="submit" 
+             value= "help" //Run a function here to use the toggled logic and display a value
+             />
+
            </form>
            <br />
             <small> Yes I am legit using basic characters like its from the 90s to organize the page. Its a V0.5 website. Besides I was told blockchainers can appreciate a simple straightforward website.
-              I've got that here in spades. -Unpaid intern </small>
+              I've got that here in spades. -Signed, Unpaid intern //Lead Dev</small>
          </div>
        </div>
   )
