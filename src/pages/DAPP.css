@@ -1,3 +1,5 @@
+/* CSS Code for all the various buttons in the first part of the page */
+
 .main-app {
     text-align: center;
     margin: 50px;
@@ -97,3 +99,106 @@
     background: #47B46B
     /* 50C878 */
 }
+
+/* CSS Code for the form in the bottom section */
+
+form {
+    box-sizing: border-box;
+    text-align: center;
+}
+
+label {
+    box-sizing: border-box;
+    text-align: center;
+}
+
+input[type=number] {
+     padding: 10px;
+    border-radius: 100px;
+    text-align: center;
+  }
+
+input[type=submit] {
+    color: #ffff;
+    background: #47B46B;
+    padding: 15px 35px;
+    border-radius: 100px;
+    text-align: center;
+    outline: none;
+    border: none;
+ }
+input[type=submit]:hover {
+    color: #ffff;
+    background: #472C4C;
+}
+
+
+
+/* CSS Code for the toggle button in the bottom section */
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+   
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  /* Navbar grey color hex code: b1b1b1 */
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 50px;
+    width: 50px;
+    left: 0px;
+    bottom: 0px;
+    background-color: #47B46B;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #472C4C;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(50px);
+    -ms-transform: translateX(50px);
+    transform: translateX(50px);
+  }
+  
+  /* Rounded sliders - Unused 
+  .slider.round {
+    border-radius: 60px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  */
