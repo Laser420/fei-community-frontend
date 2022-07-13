@@ -5,6 +5,7 @@
     margin: 50px;
 }
 
+
 /* Base button */
 .cta-button {
     border-radius: 22px;
@@ -24,6 +25,26 @@
     transition: all 0.2s ease-in-out;
     background: #472C4C;
     color: #ffff;
+}
+
+.PSM-div {
+  text-align: center;
+  border-style: solid;
+  border-color: #472C4C;
+  border-radius: 10px;
+  padding: 20px 20px;
+  margin: 50px;
+  background: #0000;
+  white-space: normal;
+  width: 200px;
+}
+
+.PSM-button {
+  border-radius: 10px;
+  padding: 15px 35px;
+  background: #47B46B;
+  white-space: normal;
+  width: 200px;
 }
 
 

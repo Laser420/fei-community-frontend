@@ -1,5 +1,5 @@
 import * as React from 'react';
-import 'C:/Users/Testing/router-test/src/components/Navbar/Coconuts_Logo_test.png';
+import 'C:/Users/Testing/Fei_frontend_test/src/components/Navbar/Coconuts_Logo_test.png';
 
 const Home = () => {
     return(

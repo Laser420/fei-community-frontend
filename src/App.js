@@ -8,6 +8,8 @@ import Voting from './pages/Voting';
 import Whitepaper from './pages/Whitepaper';
 import Footer from './components/Footer/Footer';
 import DAPP from './pages/DAPP';
+import PSM_Intro from './pages/PSM_Intro';
+import FEI_DAI_PSM from './pages/FEI_DAI_PSM';
 
 /*
 function App() {
@@ -33,7 +35,9 @@ function App() {
          <Route path="/Voting" element={<Voting />} />
          <Route path="/Whitepaper" element={<Whitepaper />} />
          <Route path="/Github" element={<Github />} />
-         <Route path="/DAPP" element={<DAPP />} />
+         <Route path="/PSM_Intro" element={<PSM_Intro />} />
+         <Route path="/DAPP" element={<DAPP/>} />
+         <Route path="/FEI_DAI_PSM" element={<FEI_DAI_PSM/>} />
         </Routes>
        <Footer />
   </HashRouter>
