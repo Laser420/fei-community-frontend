@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import './DAPP.css';
-import test_Contract from 'C:/Users/Testing/router-test/src/Contracts/test_Contract.json';
+import test_Contract from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/test_Contract.json';
 import { ethers } from 'ethers';
 import { render } from 'react-dom';
 
@@ -106,8 +106,9 @@ render() {
         try {
           const provider = new ethers.providers.Web3Provider(ethereum);
           const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-          const signer = provider.getSigner();
-          const contractObject = new ethers.Contract(contractAddress, abiTest,signer);
+          //To read a value, I can instantiate the contract under the provider and just read it
+          //For executing non-readable function, a signer is required 
+          const contractObject = new ethers.Contract(contractAddress, abiTest, provider);
           const result = await contractObject.retrieveBal(accounts[0]);
           console.log(result);
           const resultStr = result.toString();
@@ -169,7 +170,35 @@ render() {
          console.log(err);
        }
      }
+ 
+     const PSM_Label = () => {
+      return (
+      <div className={'PSM-div'}>
+        <h1> PSM 1 </h1>
+        <p> Text example phrase here</p>
+        <button onClick={retrieveInfoHandler} className={'PSM-button'}>
+          {this.state.infoBtnMsg} 
+        </button>
+        <button onClick={retrieveInfoHandler} className={'PSM-button'}>
+          Interact with this PSM
+       </button>
+      </div>
+      )
+    }
 
+        /* Testing to see if there is alphabetical letters - deprecated since input field set to numbers only.
+    * No need to use regExp anymore
+    *      const regExp = /[a-zA-Z]/g;      
+    *      if(regExp.test(this.state.mintNum)){
+    *    //  do something if letters are found in your string 
+    *      alert("Letters were found in your input.")
+    *    } else {
+    *      // do something if letters are not found in your string 
+    *      alert("Numerical input correct")
+    *      if(this.state.mintNum.includes(".")){
+    *        alert(". found in the string");
+    *      }
+    */
 
   return(
        <div className='main-app'>
@@ -226,6 +255,7 @@ render() {
             <small> Yes I am legit using basic characters like its from the 90s to organize the page. Its a V0.5 website. Besides I was told blockchainers can appreciate a simple straightforward website.
               I've got that here in spades. -Signed, Unpaid intern //Lead Dev</small>
          </div>
+        {PSM_Label()}
        </div>
   )
    //}

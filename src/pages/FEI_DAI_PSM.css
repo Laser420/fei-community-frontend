@@ -1,0 +1,112 @@
+/* CSS Code for all the various buttons in the first part of the page */
+
+.main-app {
+    margin: 50px;
+}
+
+/*_________________________________________________________________________________*/
+
+.connect-wallet-div {
+ /* white-space: normal; */
+ /* width: 250px;*/
+  text-align: right;
+}
+
+/* Connect wallet button - uses standard hover */ 
+.connect-wallet-button {
+  border-radius: 100px;
+  padding: 15px 35px;
+  background: #47B46B
+}
+
+/* Swap to this when the wallet has been connected */ 
+.wallet-connected-button {
+  border-radius: 100px;
+  padding: 15px 35px;
+  background: #472C4C;
+}
+
+/* When the wallet is connected: Don't do much when hovering */
+.wallet-connected-button:hover{
+  border-radius: 10px;
+  padding: 15px 10px;
+  background: #ffff;
+  transition: all 0.2s ease-in-out;
+}  
+
+.wallet-connected-button:hover::before{
+  border-radius: 0px;
+  padding: 0px 0px;
+  color: #472C4C;
+  display: block;
+  font-size: 20px;
+  content: "Click to Refresh Wallet Information ";
+}
+
+.wallet-connected-button:hover:active{
+  color: #472C4C;
+}
+
+/* _____________________________________________________________________________-*/
+
+.PSM-div {
+  border-style: solid;
+  border-color: #472C4C;
+  border-radius: 20px;
+  padding: 50px 50px;
+  margin: 30px;
+  background: #0000; 
+  white-space: normal; 
+   width: 300px; 
+  text-align: center;
+}
+
+.PSM-button {
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 15px 35px;
+  background: #47B46B;
+ /* white-space: normal; */
+ /*  width: 200px; */
+}
+
+.PSM-button:hover {
+  background: #472C4C;
+}
+
+
+/* CSS Code for the form in the bottom section */
+
+form {
+  box-sizing: border-box;
+  text-align: center;
+}
+
+label {
+  box-sizing: border-box;
+  text-align: center;
+}
+
+input[type=number] {
+   padding: 10px;
+  border-radius: 100px;
+  text-align: center;
+}
+
+input[type=submit] {
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 15px 35px;
+  background: #47B46B;
+  border-style: solid;
+  border-color: #472C4C;
+}
+input[type=submit]:hover {
+  background: #472C4C;
+}
+
+
+
+
