@@ -20,6 +20,7 @@ const FEI_USD_ABI_PRS = JSON.parse(JSON.stringify(FEI_USD_ABI)); // Parse the FE
 const DAI_ADD =  "0x6B175474E89094C44Da98b954EedeAC495271d0F"; //DAI ERC20 address
 const DAI_ABI_PRS = JSON.parse(JSON.stringify(DAI_ABI));  // Parse it
 
+
 class FEI_DAI_PSM extends React.Component {
  constructor(props) {
     super(props);
@@ -37,7 +38,10 @@ class FEI_DAI_PSM extends React.Component {
      mintNum: 0,
 
      //the allowance of DAI that the user has, needs to be more or equal to the mintNum 
-     allowanceNum: 10,
+     DallowanceNum: 0,
+
+     //the allowance of FEI that the user has set, needs to be more or equal to the redeemNum
+     FallowanceNum: 0,
 
      //the value that will be redeemed
      redeemNum: 0,
@@ -120,6 +124,7 @@ render() {
        {Fei_Balance_Checker()} // Check the connected wallet's FEI balance
        {DAI_Balance_Checker()} // Check the connected wallet's DAI balance
        {checkDAIApproval()} // Check the connected wallets DAI approval to the FEI PSM
+       {checkFEIApproval()} //Check the connected wallet's FEI approval to the FEI PSM
      }
     
      /* Checks the connected wallet's balance of FEI */
@@ -180,13 +185,30 @@ render() {
  }
 }
 
+//
+//
+//
+//  Connect Wallet and Balance Checkers END
+//
+//
+//
+
+
+//
+//
+//
+// Minting Handlers and checkers START
+//
+//
+//
+
 
 /* Handles whether or not the transaction is approving the spending limit or if the minting can simply occur
 */
   const mintButtonHandler = () => {
 
     //If the allowance is >= the minting num
-    if(this.state.allowanceNum >= this.state.mintNum){
+    if(this.state.DallowanceNum >= this.state.mintNum){
       alert("Allowance is greater than the minting amount - proceed to minting FEI.")
       {mintFEIHandler()}
       
@@ -199,7 +221,7 @@ render() {
 
 
 
-  //Aprove the current amount (in the input field) of DAI to be used by the FEI_DAI_PSM
+  //Aprove the current mintNum input of DAI to be used by the FEI_DAI_PSM
   const approveDAItransactionHandler = async () => {
     let inputStr = this.state.mintNum;
 
@@ -257,6 +279,8 @@ render() {
   }
 
   
+  //Interacts with the FEI PSM 
+  //Mints FEI from DAI, minting the mintNum amount
   const mintFEIHandler = async () => {
 
     let inputStr = this.state.mintNum;
@@ -316,7 +340,9 @@ render() {
     }    
   }
 
-
+  //Check the current amount of DAI approved by the user for the FEI PSM
+  //Sets this value to the /DallowanceNum/
+  //Called when connecting the wallet
   const checkDAIApproval  = async () => {
     if(this.state.walletConnected === true) {
       const { ethereum } = window;
@@ -333,16 +359,16 @@ render() {
       const lengthOfD = resultStr.length - 16;
       const decimal = resultStr.substring(lengthNonD, lengthOfD);
       const returnStr = nonDecimal + "." + decimal;
-      this.setState({allowanceNum : returnStr}); // display the amount of FEI we have
+      this.setState({DallowanceNum : returnStr}); // display the amount of FEI we have
       //This balance is used in the redeem value to show how much DAI can be redeemed
    } else if (this.state.walletConnected === false) {
     console.log("Wallet not connected.")
    }
   }
 
-
+ // For use on the interact button - swaps the button message for user quality of life
   const approveOrMint = () => {
-    if(this.state.allowanceNum >= this.state.mintNum){
+    if(this.state.DallowanceNum >= this.state.mintNum){
       return "Mint "
       
     } else { 
@@ -384,27 +410,191 @@ render() {
   }
 
 
-  const redeemButtonHandler = () => {
-    let inputStr = this.state.redeemNum;
+//
+//
+//
+//  Minting Handlers and checkers END
+//
+//
+//
 
-    if(this.state.redeemNum.includes(".")){
-      const redeemNumSplitArray = this.state.redeemNum.split("."); // First split our value into two strings at the decimal
-      const wholeNum = redeemNumSplitArray[0]; // the whole number is simply the part before the decimal point
-      let decimals = redeemNumSplitArray[1]; // the decimals are the numbers after the decimal point
-      for(let i = 0; decimals.length < 18 ; i ++){ //If the current decimals are less than 18, add a zero - create an 18 digit long number
-          decimals = decimals + "0";
-      }
 
-      inputStr = wholeNum + decimals; // set the final input to be the wholeNumber and the decimals added
-      alert("Number input has a decimal point. Our first half of the string is: " + wholeNum + " And the second half is " + decimals + " And the whole string is: " + inputStr);
-    } 
-    else {  //If there is no demical point, the user wants to use a solid number
-      //Simply append 18 zeroes to the end of the transaction
-      const str = this.state.redeemNum;
-      inputStr = str + "000000000000000000" 
-      alert("No decimal point in the string and our string is: " + inputStr)
-    }    
+//
+//
+//
+// Redeem Handlers and checkers START
+//
+//
+//
+
+//Determines whether the FEI ERC20 must have approval or whether this transaction can proceed
+const redeemButtonHandler = () => {
+
+  //If the allowance is >= the minting num
+  if(this.state.FallowanceNum >= this.state.redeemNum){
+    alert("Allowance is greater than the minting amount - proceed to minting FEI.")
+    {redeemFEIHandler()}
+    
+  } else { //If the allowanceNum is less than the mintNum
+    alert("Allowance is less than the minting amount - make an approval first. ")
+    {approveFEItransactionHandler()}
+    //edit this handler to find exactly how much needs to be approved
+  }
 }
+
+ //Aprove the current redeemNum input of FEI to be used by the FEI_DAI_PSM
+ const approveFEItransactionHandler = async () => {
+  let inputStr = this.state.redeemNum;
+
+  if(this.state.redeemNum.includes(".")){
+    const redeemNumSplitArray = this.state.redeemNum.split("."); // First split our value into two strings at the decimal
+    const wholeNum = redeemNumSplitArray[0]; // the whole number is simply the part before the decimal point
+    let decimals = redeemNumSplitArray[1]; // the decimals are the numbers after the decimal point
+    for(let i = 0; decimals.length < 18 ; i ++){ //If the current decimals are less than 18, add a zero - create an 18 digit long number
+        decimals = decimals + "0";
+    }
+
+    inputStr = wholeNum + decimals; // set the final input to be the wholeNumber and the decimals added
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+       const provider = new ethers.providers.Web3Provider(ethereum);
+       const signer = provider.getSigner();
+       const FEI_CONT = new ethers.Contract(FEI_USD_ADD, FEI_USD_ABI_PRS, signer);
+        console.log("Initialize approval");
+        //approve the FEI-DAI_PSM to use 
+        let Txn = await FEI_CONT.approve(FEI_DAI_PSM_ADD, inputStr);     
+        console.log("Mining... please wait");
+        await Txn.wait();
+        console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+      } else {
+        console.log("Ethereum object does not exist");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  } 
+  else {  //If there is no demical point, the user wants to use a solid number
+    //Simply append 18 zeroes to the end of the transaction
+    const str = this.state.redeemNum;
+    inputStr = str + "000000000000000000" 
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+       const provider = new ethers.providers.Web3Provider(ethereum);
+       const signer = provider.getSigner();
+       const FEI_CONT = new ethers.Contract(FEI_USD_ADD, FEI_USD_ABI_PRS, signer);
+        console.log("Initialize approval");
+        //approve the FEI-DAI_PSM to use 
+        let Txn = await FEI_CONT.approve(FEI_DAI_PSM_ADD, inputStr); 
+        console.log("Mining... please wait");
+        await Txn.wait();
+        console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+      } else {
+        console.log("Ethereum object does not exist");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }    
+}
+
+//Checks the current amount of FEI approved by the user for interacting with the contract PSM
+//Sets this value to FallowanceNum
+//Called by the connectwallet handler
+const checkFEIApproval  = async () => {
+  if(this.state.walletConnected === true) {
+    const { ethereum } = window;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    const contractObject = new ethers.Contract(FEI_USD_ADD, FEI_USD_ABI_PRS, provider);
+    //Find the DAI allowance of the user
+    const result = await contractObject.allowance(accounts[0], FEI_DAI_PSM_ADD);
+    const resultStr = result.toString();
+    console.log(resultStr);
+    //Take our result and make it legible with two decimal points
+    const lengthNonD = resultStr.length - 18;
+    const nonDecimal = resultStr.substring(0, lengthNonD);
+    const lengthOfD = resultStr.length - 16;
+    const decimal = resultStr.substring(lengthNonD, lengthOfD);
+    const returnStr = nonDecimal + "." + decimal;
+    this.setState({FallowanceNum : returnStr}); // display the amount of FEI we have
+    //This balance is used in the redeem value to show how much DAI can be redeemed
+ } else if (this.state.walletConnected === false) {
+  console.log("Wallet not connected.")
+ }
+}
+
+//actually redeems the FEI
+const redeemFEIHandler = async () => {
+  
+  let inputStr = this.state.redeemNum;
+
+  if(this.state.redeemNum.includes(".")){
+    const redeemNumSplitArray = this.state.redeemNum.split("."); // First split our value into two strings at the decimal
+    const wholeNum = redeemNumSplitArray[0]; // the whole number is simply the part before the decimal point
+    let decimals = redeemNumSplitArray[1]; // the decimals are the numbers after the decimal point
+    for(let i = 0; decimals.length < 18 ; i ++){ //If the current decimals are less than 18, add a zero - create an 18 digit long number
+        decimals = decimals + "0";
+    }
+
+    inputStr = wholeNum + decimals; // set the final input to be the wholeNumber and the decimals added
+
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+       const provider = new ethers.providers.Web3Provider(ethereum);
+       const signer = provider.getSigner();
+       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+       const FEI_DAI_PSM_CONT = new ethers.Contract(FEI_DAI_PSM_ADD, FEI_DAI_PSM_ABI_PRS, signer);
+        console.log("Initialize payment");
+        let Txn = await FEI_DAI_PSM_CONT.redeem(accounts[0], inputStr,0);        
+        console.log("Mining... please wait");
+        await Txn.wait();
+        console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+      } else {
+        console.log("Ethereum object does not exist");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  } 
+  else {  //If there is no demical point, the user wants to use a solid number
+    //Simply append 18 zeroes to the end of the transaction
+    const str = this.state.redeemNum;
+    inputStr = str + "000000000000000000";
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+       const provider = new ethers.providers.Web3Provider(ethereum);
+       const signer = provider.getSigner();
+       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+       const FEI_DAI_PSM_CONT = new ethers.Contract(FEI_DAI_PSM_ADD, FEI_DAI_PSM_ABI_PRS, signer);
+        console.log("Initialize payment");
+        let Txn = await FEI_DAI_PSM_CONT.redeem(accounts[0], inputStr,0);       
+        console.log("Mining... please wait");
+        await Txn.wait();
+        console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+      } else {
+        console.log("Ethereum object does not exist");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }    
+}
+
+//For use on the interact button - swaps the button message for user quality of life
+const approveOrRedeem = () => {
+  if(this.state.FallowanceNum >= this.state.redeemNum){
+    return "Redeem "
+    
+  } else { 
+      return "Approve "
+  }
+}
+
 
   //Has some text and will need to read and display values from blockchain
   //Form that allows input of items and upon form submission, calls the redeemButtonHandler
@@ -428,7 +618,7 @@ render() {
             <br></br>
             <input 
              type="submit" 
-             value= {"Redeem " + this.state.redeemNum + " DAI"} 
+             value= {approveOrRedeem() + this.state.redeemNum + " DAI"} 
              />
            </form>
             <h5> Please note this frontend supports decimal values up to 18 places. </h5>
