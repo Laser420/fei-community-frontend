@@ -16,6 +16,7 @@ const Navbar = () => {
             <img
                  src={require('./Coconuts_Logo_test.png')}
             />
+                Click the coconut to go home.
             </NavLink>
         <NavMenu>
 
