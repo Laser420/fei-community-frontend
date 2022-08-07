@@ -209,11 +209,9 @@ render() {
 
     //If the allowance is >= the minting num
     if(this.state.DallowanceNum >= this.state.mintNum){
-      alert("Allowance is greater than the minting amount - proceed to minting FEI.")
       {mintFEIHandler()}
       
     } else { //If the allowanceNum is less than the mintNum
-      alert("Allowance is less than the minting amount - make an approval first. ")
       {approveDAItransactionHandler()}
       //edit this handler to find exactly how much needs to be approved
     }
@@ -369,13 +367,15 @@ render() {
  // For use on the interact button - swaps the button message for user quality of life
   const approveOrMint = () => {
     if(this.state.DallowanceNum >= this.state.mintNum){
-      return "Mint "
+      return "Mint " + this.state.mintNum + " FEI."
       
     } else { 
-        return "Approve "
+        return "Please approve the use of " + this.state.mintNum + " DAI "
+        
     }
   }
  
+
   //Mint FEI with DAI
   //Has some text and will need to read and display values from blockchain
   //Form that allows input of items and upon form submission, calls the mintButtonHandler
@@ -400,7 +400,7 @@ render() {
             <br></br>
             <input 
              type="submit" 
-             value= {approveOrMint() + this.state.mintNum + " FEI"} 
+             value= {approveOrMint()} 
              />
            </form>
 
@@ -432,11 +432,9 @@ const redeemButtonHandler = () => {
 
   //If the allowance is >= the minting num
   if(this.state.FallowanceNum >= this.state.redeemNum){
-    alert("Allowance is greater than the minting amount - proceed to minting FEI.")
     {redeemFEIHandler()}
     
   } else { //If the allowanceNum is less than the mintNum
-    alert("Allowance is less than the minting amount - make an approval first. ")
     {approveFEItransactionHandler()}
     //edit this handler to find exactly how much needs to be approved
   }
@@ -588,10 +586,12 @@ const redeemFEIHandler = async () => {
 //For use on the interact button - swaps the button message for user quality of life
 const approveOrRedeem = () => {
   if(this.state.FallowanceNum >= this.state.redeemNum){
-    return "Redeem "
+    return "Redeem " + this.state.redeemNum + "DAI"
+    
     
   } else { 
-      return "Approve "
+      return "Please approve the use of " + this.state.redeemNum + " FEI"
+    
   }
 }
 
@@ -618,7 +618,7 @@ const approveOrRedeem = () => {
             <br></br>
             <input 
              type="submit" 
-             value= {approveOrRedeem() + this.state.redeemNum + " DAI"} 
+             value= {approveOrRedeem()} 
              />
            </form>
             <h5> Please note this frontend supports decimal values up to 18 places. </h5>
