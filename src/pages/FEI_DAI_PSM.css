@@ -30,7 +30,7 @@
 /* When the wallet is connected: Don't do much when hovering */
 .wallet-connected-button:hover{
   border-radius: 10px;
-  padding: 15px 10px;
+  padding: 15px 35px;
   background: #ffff;
   transition: all 0.2s ease-in-out;
 }  

@@ -9,7 +9,7 @@ function Footer() {
         <div className='footer-link-wrapper'>
           <div class='footer-link-items'>
             <h4>
-                <Link to='/'>Placeholder</Link>
+                <Link to='/TermsOfService'>Terms of Service </Link>
             </h4>
           </div>
           <div class='footer-link-items'>
@@ -31,7 +31,7 @@ function Footer() {
           </div>
         </div>
       </div>
-          <small class='website-rights'>DAO © 2022</small>
+          <small class='website-rights'>GPL 3.0 License</small>
           <div class='social-icons'>
           </div>
         </div>
