@@ -586,7 +586,7 @@ const redeemFEIHandler = async () => {
 //For use on the interact button - swaps the button message for user quality of life
 const approveOrRedeem = () => {
   if(this.state.FallowanceNum >= this.state.redeemNum){
-    return "Redeem " + this.state.redeemNum + "DAI"
+    return "Redeem " + this.state.redeemNum + " DAI"
     
     
   } else { 
@@ -634,6 +634,8 @@ const approveOrRedeem = () => {
             </div>
 
           <h1> Mint and Redeem FEI </h1>
+          <br></br>
+          <br></br>
 
           <div style={{
             display: 'flex',

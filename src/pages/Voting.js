@@ -7,7 +7,7 @@ function Voting() {
 
   function MyFunction() {
  // window.location.replace("https://www.w3schools.com")
-  window.open("https://www.w3schools.com");
+  window.open("https://www.tally.xyz/governance/eip155:1:0x0BEF27FEB58e857046d630B2c03dFb7bae567494");
   //navigate('./index.js')
  }
 

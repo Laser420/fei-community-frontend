@@ -18,9 +18,6 @@ const Navbar = () => {
             />
             </NavLink>
         <NavMenu>
-            <NavBtn>
-             <NavBtnLink to='/Whitepaper'> Whitepaper</NavBtnLink>
-            </NavBtn>
 
             <NavBtn>
                 <NavBtnLink to='/Github'> Github </NavBtnLink>

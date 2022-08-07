@@ -33,7 +33,6 @@ function App() {
         <Routes>
          <Route path="/" element={<Home />} />
          <Route path="/Voting" element={<Voting />} />
-         <Route path="/Whitepaper" element={<Whitepaper />} />
          <Route path="/Github" element={<Github />} />
          <Route path="/PSM_Intro" element={<PSM_Intro />} />
          <Route path="/DAPP" element={<DAPP/>} />
@@ -44,6 +43,7 @@ function App() {
   )
 }
 //router tags replaced by HashRouter
+//<Route path="/Whitepaper" element={<Whitepaper />} />
 
 
 export default App;
