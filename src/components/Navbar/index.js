@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import {Nav, Navlink, Bars, NavMenu, NavBtn, NavBtnLink 
 } from './NavbarElements';
 import Home from '../../pages';
-import 'C:/Users/Testing/Fei_frontend_test/src/components/Navbar/Coconuts_Logo_test.png';
+import './Coconuts_Logo_test.png';
 
 //npm install styled-components
 //npm install react-router-dom react-icons
@@ -29,7 +29,7 @@ const Navbar = () => {
             </NavBtn>
          </NavMenu>
             <NavBtn>
-                <NavBtnLink to='/PSM_Intro'> Enter DAPP</NavBtnLink>
+                <NavBtnLink to='/PSM_Intro'> Enter dApp</NavBtnLink>
             </NavBtn>
         </Nav>
         </>

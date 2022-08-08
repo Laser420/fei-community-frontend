@@ -7,7 +7,6 @@ import Github from './pages/Github';
 import Voting from './pages/Voting';
 import TermsOfService from './pages/TermsOfService';
 import Footer from './components/Footer/Footer';
-import DAPP from './pages/DAPP';
 import PSM_Intro from './pages/PSM_Intro';
 import FEI_DAI_PSM from './pages/FEI_DAI_PSM';
 
@@ -36,7 +35,6 @@ function App() {
          <Route path="/Github" element={<Github />} />
          <Route path="/TermsOfService" element={<TermsOfService />} />
          <Route path="/PSM_Intro" element={<PSM_Intro />} />
-         <Route path="/DAPP" element={<DAPP/>} />
          <Route path="/FEI_DAI_PSM" element={<FEI_DAI_PSM/>} />
         </Routes>
        <Footer />

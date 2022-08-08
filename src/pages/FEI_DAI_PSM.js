@@ -1,18 +1,14 @@
 import React from 'react';
 import { ethers } from 'ethers';
 
-
-import test_Contract from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/test_Contract.json';
-
-import FEI_USD_ABI from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/FEI_USD_ABI.json'; //FEI ERC20 token ABI
-import DAI_ABI from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/DAI_ABI.json'; // DAI ERC20 token ABI
+import FEI_USD_ABI from './contracts/FEI_USD_ABI.json'; //FEI ERC20 token ABI
+import DAI_ABI from './contracts/DAI_ABI.json'; // DAI ERC20 token ABI
 
 import './FEI_DAI_PSM.css';
-import FEI_DAI_PSM_ABI from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/FEI_DAI_PSM.json'; // FEI-DAI PSM Abi import
+import FEI_DAI_PSM_ABI from './contracts/FEI_DAI_PSM.json'; // FEI-DAI PSM Abi import
 const FEI_DAI_PSM_ADD = "0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2"; // FEI-DAI PSM address
 const FEI_DAI_PSM_ABI_PRS = JSON.parse(JSON.stringify(FEI_DAI_PSM_ABI)); //This worked, parsed the stringified ABI manually
 
-const abiTest = JSON.parse(JSON.stringify(test_Contract)); //This worked, parsed the stringified ABI manually
 
 const FEI_USD_ADD = "0x956F47F50A910163D8BF957Cf5846D573E7f87CA"; // FEI ERC20 address
 const FEI_USD_ABI_PRS = JSON.parse(JSON.stringify(FEI_USD_ABI)); // Parse the FEI ERC20 ABI
@@ -64,7 +60,7 @@ class FEI_DAI_PSM extends React.Component {
     }else if(ethereum)
     {
       try {
-       alert("Ethereum is loaded on your browser. Be sure to check if your wallet is connected.")
+      // alert("Ethereum is loaded on your browser. Be sure to check if your wallet is connected.")
        } catch (err) {
       this.state.status = "Err";
       console.log(err)

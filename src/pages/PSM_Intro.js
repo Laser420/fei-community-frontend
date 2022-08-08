@@ -1,8 +1,8 @@
 import React from 'react';
 import './PSM_Intro.css';
-import FEI_LUSD_PSM_ABI from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/FEI_LUSD_PSM.json';
-import FEI_ETH_PSM_ABI from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/FEI_ETH_PSM.json';
-import FEI_DAI_PSM_ABI from 'C:/Users/Testing/Fei_frontend_test/src/Contracts/FEI_DAI_PSM.json';
+import FEI_LUSD_PSM_ABI from './contracts/FEI_LUSD_PSM.json';
+import FEI_ETH_PSM_ABI from './contracts/FEI_ETH_PSM.json';
+import FEI_DAI_PSM_ABI from './contracts/FEI_DAI_PSM.json';
 import { ethers } from 'ethers';
 
 const FEI_LUSD_PSM_Add = "0xb0e731F036AdfDeC12da77c15aaB0F90E8e45A0e";
@@ -128,7 +128,7 @@ render() {
       return (
       <div className='PSM-div'>
         <h2> LUSD-FEI PSM </h2>
-        <p> Text example phrase here</p>
+        <p> This PSM exchanges LUSD and FEI.</p>
         <h4> This PSM is {this.state.isPausedPSM1} </h4>
        
         <button onClick={PSM_1_Button_Handler} className={'PSM-button'}>
@@ -143,7 +143,7 @@ render() {
       return (
       <div className='PSM-div'>
         <h2> DAI-FEI PSM  </h2>
-        <p> Text example phrase here</p>
+        <p> This PSM exchanges DAI and FEI.</p>
         <h4> This PSM is {this.state.isPausedPSM2} </h4>
        
         <button onClick={PSM_2_Button_Handler} className={'PSM-button'}>
@@ -158,7 +158,7 @@ render() {
       return (
       <div className='PSM-div'>
         <h2> ETH-FEI PSM  </h2>
-        <p> Text example phrase here</p>
+        <p> This PSM exchanges ETH and FEI. </p>
         <h4> This PSM is {this.state.isPausedPSM3} </h4>
        
         <button onClick={PSM_3_Button_Handler} className={'PSM-button'}>
@@ -173,7 +173,7 @@ render() {
   return(
 
     <div className='main-app'>
-     <h1> Explanation of what FEI and PSMs are</h1>
+     <h1> Choose your Peg-Stability-Module (PSM): </h1>
     <div style={{
       display: 'flex',
       justifyContent: 'center',
@@ -184,6 +184,9 @@ render() {
     {PSM_Label_2()}
     {PSM_Label_3()}
     </div>
+    <h3> What is a PSM? </h3>
+    <p> PSMs (Peg Stability Modules) help FEI maintain liquidity and stability with other assets such as ETH and DAI. FEI's PSM with DAI helps it maintain a tight peg to the USD while reducing decentralization less than a direct USDC peg.</p>
+    <p> The other PSM options are paused and in the process of being deprecated. We still decided to include them in the frontend, just in case of reactivation.</p>
     </div>
   )
 
