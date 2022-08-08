@@ -13,7 +13,7 @@ If you have any ideas for more features and/or questions unrelated to code, cont
 
 ## Outline:
 
-The first 'index.js' pages renders the 'app.js' page which in turn renders a some React-router stuff. This router displays and manages the pages contained in ./src/pages.
+The first 'index.js' pages renders the 'app.js' page which in turn renders some React-router stuff. This router displays and manages the pages contained in ./src/pages.
 
 #### Within ./src/pages:
 
