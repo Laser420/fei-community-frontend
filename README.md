@@ -1,6 +1,6 @@
 # frontend-test
 
-I started this repo to just store the code here just in case my laptop went up in smoke.
+I started this repo to store the code here just in case my laptop went up in smoke.
 
 Now this Github serves another, moderately more important purpose....allowing the world to see my code. (God it's scary to be so open...)
 First things first: you may judge my code styling and my failure to program object orientated but it works damnit. 
