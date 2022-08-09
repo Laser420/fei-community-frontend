@@ -180,17 +180,17 @@ render() {
       alignItems: 'center',
       height: '60vh',
     }} >
-    {PSM_Label_1()}
     {PSM_Label_2()}
-    {PSM_Label_3()}
     </div>
     <h3> What is a PSM? </h3>
     <p> PSMs (Peg Stability Modules) help FEI maintain liquidity and stability with other assets such as ETH and DAI. FEI's PSM with DAI helps it maintain a tight peg to the USD while reducing decentralization less than a direct USDC peg.</p>
-    <p> The other PSM options are paused and in the process of being deprecated. We still decided to include them in the frontend, just in case of reactivation.</p>
+    <p> All older PSM's were fully deprecated. We still decided to include this page in the frontend in case of future PSM creation.</p>
     </div>
   )
 
-
+//{PSM_Label_1()}
+//{PSM_Label_3()}
+//
 } //End of Render Method
 } //End of Class
 
