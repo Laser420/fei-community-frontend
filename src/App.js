@@ -9,6 +9,7 @@ import TermsOfService from './pages/TermsOfService';
 import Footer from './components/Footer/Footer';
 import PSM_Intro from './pages/PSM_Intro';
 import FEI_DAI_PSM from './pages/FEI_DAI_PSM';
+import Opportunities from './pages/Opportunities';
 
 /*
 function App() {
@@ -36,6 +37,7 @@ function App() {
          <Route path="/TermsOfService" element={<TermsOfService />} />
          <Route path="/PSM_Intro" element={<PSM_Intro />} />
          <Route path="/FEI_DAI_PSM" element={<FEI_DAI_PSM/>} />
+         <Route path="/Opportunities" element={<Opportunities/>} />
         </Routes>
        <Footer />
   </HashRouter>
