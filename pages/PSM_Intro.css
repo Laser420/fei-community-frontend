@@ -1,0 +1,33 @@
+/* CSS Code for all the various buttons in the first part of the page */
+
+.main-app {
+    text-align: center;
+}
+
+
+.PSM-div {
+  border-style: solid;
+  border-color: #472C4C;
+  border-radius: 10px;
+  padding: 25px 25px;
+  margin: 50px;
+  background: #0000; 
+  white-space: normal;
+  width: 250px;
+  text-align: center;
+}
+
+.PSM-button {
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 15px 35px;
+  background: #47B46B;
+  white-space: normal;
+  width: 200px;
+}
+
+.PSM-button:hover {
+  background: #472C4C;
+}
+
