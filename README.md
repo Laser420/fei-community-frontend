@@ -1,7 +1,7 @@
 # frontend-test
 
 ## This WIP area is what it sounds like, where I store the code for the WIP features
-### Currently working on an Opportunities page with zap functionality, I am building it in proper object orientated fashion with objects and arguments instead of hardwiring everything. As of 8/11/2022 - the zap page is ugly as all hell and that probably wont change, but it works, now I need to brush up on my solidity and make some zap contracts
+### Currently working on an Opportunities page with zap functionality, I am building it in proper object orientated fashion with objects and arguments instead of hardwiring everything. As of 8/11/2022 - the zap page is ugly as all hell and that probably wont change for a long while, but it works. Now I need to dial up my solidity and make some zap contracts
 
 I started this repo to store the code here just in case my laptop went up in smoke.
 
