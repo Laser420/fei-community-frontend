@@ -26,7 +26,7 @@ class Opp extends React.Component {
 
 
 render() {
-  console.log(typeof(abiTest))
+ // console.log(typeof(abiTest))
 
    /* Connect Wallet Button
       Onclick reads the connectWallethandler function
@@ -83,7 +83,7 @@ render() {
       const contractObject = new ethers.Contract(FEI_USD_ADD, FEI_USD_ABI_PRS, provider);
       const result = await contractObject.balanceOf(accounts[0]);
       const resultStr = result.toString();
-      console.log(resultStr);
+     // console.log(resultStr);
       
       //Take our result and make it legible with two decimal points
       const lengthNonD = resultStr.length - 18;
@@ -97,7 +97,7 @@ render() {
       this.setState({zapNum : returnStr}); // display the amount of FEI we have as zapNum
       //This balance is used in the redeem value to show how much DAI can be redeemed
    } else if (this.state.walletConnected === false) {
-    console.log("Wallet not connected.")
+    //console.log("Wallet not connected.")
    }
     }
 
@@ -113,7 +113,7 @@ render() {
     //Find the FEI allowance of the user for the zapADD
     const result = await contractObject.allowance(accounts[0], this.props.zapADD);
     const resultStr = result.toString();
-    console.log(resultStr);
+   // console.log(resultStr);
     //Take our result and make it legible with two decimal points
     const lengthNonD = resultStr.length - 18;
     const nonDecimal = resultStr.substring(0, lengthNonD);
@@ -123,7 +123,7 @@ render() {
     this.setState({FallowanceNum : returnStr}); // //How much FEI is approved for us at this address
     //This balance is used in the redeem value to show how much DAI can be redeemed
  } else if (this.state.walletConnected === false) {
-  console.log("Wallet not connected.")
+ // console.log("Wallet not connected.")
  }
     }
 
@@ -138,8 +138,8 @@ render() {
       for(let i = 0; decimals.length < 18 ; i ++){ //If the current decimals are less than 18, add a zero - create an 18 digit long number
           decimals = decimals + "0";
       }
-
       inputStr = wholeNum + decimals; // set the final input to be the wholeNumber and the decimals added
+      
       try {
         const { ethereum } = window;
         if (ethereum) {
@@ -163,6 +163,7 @@ render() {
       //Simply append 18 zeroes to the end of the transaction
       const str = this.state.zapNum;
       inputStr = str + "000000000000000000" 
+
       try {
         const { ethereum } = window;
         if (ethereum) {
@@ -195,8 +196,18 @@ render() {
         for(let i = 0; decimals.length < 18 ; i ++){ //If the current decimals are less than 18, add a zero - create an 18 digit long number
             decimals = decimals + "0";
         }
-  
         inputStr = wholeNum + decimals; // set the final input to be the wholeNumber and the decimals added
+
+      //set up an array that is the same as the args array from the parent
+      //this array is what we will pass as the arguments for the call
+      //This is our entry call so we use argsEnter
+      const args = this.props.argsEnter; 
+      //Not every contract has the same arguments in the same place, but every contract needs to know how much FEI the user wants to input
+      //The parent sets what index of the argument array needs to be replaced with user input....
+      //here we actually set our inputStr (the decimal-prepped user input) to be at that index
+      args[this.props.indexOfInputEnter] = inputStr;
+      console.log(args);
+
         try {
           const { ethereum } = window;
           if (ethereum) {
@@ -204,8 +215,9 @@ render() {
            const signer = provider.getSigner();
            const ZAP_CONT = new ethers.Contract(this.props.zapADD, this.props.zapABI, signer); //FEI contract initialized
             console.log("Initialize approval");
-            //call the zap function on the zap contract with this input
-            let Txn = await ZAP_CONT.zap(inputStr);     
+            //this.props.enterCall is set by the parent to be whatever call this Opp uses to enter the opportunity
+            //'...args' uses the ES6 spread operator to spread the values of the args array as parameters for the contract call
+            let Txn = await ZAP_CONT[this.props.enterCall](...args);     
             console.log("Mining... please wait");
             await Txn.wait();
             console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
@@ -220,15 +232,27 @@ render() {
         //Simply append 18 zeroes to the end of the transaction
         const str = this.state.zapNum;
         inputStr = str + "000000000000000000" 
+
+        //set up an array that is the same as the args array from the parent
+        //this array is what we will pass as the arguments for the call
+        //This is our entry call so we use argsEnter
+        const args = this.props.argsEnter; 
+        //Not every contract has the same arguments in the same place, but every contract needs to know how much FEI the user wants to input
+        //The parent sets what index of the argument array needs to be replaced with user input....
+        //here we actually set our inputStr (the decimal-prepped user input) to be at that index
+        args[this.props.indexOfInputEnter] = inputStr;
+        console.log(args);
+
         try {
           const { ethereum } = window;
           if (ethereum) {
            const provider = new ethers.providers.Web3Provider(ethereum);
            const signer = provider.getSigner();
            const ZAP_CONT = new ethers.Contract(this.props.zapADD, this.props.zapABI, signer);
-            console.log("Initialize approval");
-            //call the zap function on the zap contract
-            let Txn = await ZAP_CONT.zap(inputStr); 
+            console.log("Initialize " + this.props.enterCall);
+            //this.props.enterCall is set by the parent to be whatever call this Opp uses to enter the opportunity
+            //'...args' uses the ES6 spread operator to spread the values of the args array as parameters for the contract call
+            let Txn = await ZAP_CONT[this.props.enterCall](...args);  
             console.log("Mining... please wait");
             await Txn.wait();
             console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
@@ -261,11 +285,11 @@ render() {
 
   //Purely cosmetic fix on what the buttons say...not what the buttons do.
   const approveOrZap = () => {
-    if(this.state.FallowanceNum >= this.state.zapNum){
-      return "Zap " + this.state.zapNum + " FEI."
+    if(this.state.FallowanceNum >= this.state.zapNum){ 
+      return "Zap " + this.state.zapNum + " FEI.";
       
     } else { 
-        return "Please approve the use of " + this.state.zapNum + " FEI "
+        return "Please approve the use of " + this.state.zapNum + " FEI ";
         
     }
   }
