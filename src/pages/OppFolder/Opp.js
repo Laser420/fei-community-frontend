@@ -19,7 +19,11 @@ class Opp extends React.Component {
 
       zapNum: 0, // the number of FEI we want to zap
 
-      FallowanceNum: 0, // the allowance of FEI that is approved
+      FallowanceNum: 0, // the amount of FEI that is approved
+
+      unZapNum: 0, //the number of the receipt token we want to unzap back into FEI
+
+      RallowanceNum: 0, //the amount of the user's receipt token that is approved
     
     };
   }
@@ -68,9 +72,13 @@ render() {
         console.log(err)
       }
       {Fei_Balance_Checker()} // Check the connected wallet's FEI balance
-      {checkFEIApproval()} //Check the connected wallet's FEI approval to the FEI PSM
+      {checkFEIApproval()} //Check the connected wallet's FEI approval to the opportunity contract
+      {Receipt_Balance_Checker()} //Check the connected wallet's receipt balance
+      {checkReceiptTknApproval()} //Check the connected wallet's receiptTkn approval status of the unzap contract
     }
    
+
+    //ZAP functions...
 
     /* Checks the connected wallet's balance of FEI - sets this balance as zapNum */
     const Fei_Balance_Checker = async () => {
@@ -127,7 +135,7 @@ render() {
  }
     }
 
-  //Aprove the current mintNum input of DAI to be used by the FEI_DAI_PSM
+  
   const approveZapHandler = async () => {
     let inputStr = this.state.zapNum;
 
@@ -214,7 +222,7 @@ render() {
            const provider = new ethers.providers.Web3Provider(ethereum);
            const signer = provider.getSigner();
            const ZAP_CONT = new ethers.Contract(this.props.zapADD, this.props.zapABI, signer); //FEI contract initialized
-            console.log("Initialize approval");
+            console.log("Initialize " + this.props.enterCall);
             //this.props.enterCall is set by the parent to be whatever call this Opp uses to enter the opportunity
             //'...args' uses the ES6 spread operator to spread the values of the args array as parameters for the contract call
             let Txn = await ZAP_CONT[this.props.enterCall](...args);     
@@ -266,7 +274,7 @@ render() {
     }
 
 
-  const OpportunityHandler = () => {
+  const zapHandler = () => {
         alert("Testing shit")
        //If the allowance is >= the minting num
        if(this.state.FallowanceNum >= this.state.zapNum){
@@ -293,6 +301,240 @@ render() {
         
     }
   }
+  
+  //ZAP functions end
+
+  //Unzap functions begin:
+
+      
+    //Check the balance of the user's receipt tokens, present the user with how much they can unzap
+    //balanceOf called from receipt ERC20 contract initialized with 'receiptADD' & 'receiptABI'
+    //sets returned value to unZapNum
+      const Receipt_Balance_Checker = async () => {
+        if(this.state.walletConnected === true) {
+  
+        const { ethereum } = window; 
+  
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        //check the balanceOf the user at the receipt contract address with its ABI;
+        const contractObject = new ethers.Contract(this.props.receiptADD, this.props.receiptABI, provider);
+        const result = await contractObject.balanceOf(accounts[0]);
+        const resultStr = result.toString();
+       // console.log(resultStr);
+        
+        //Take our result and make it legible with two decimal points
+        const lengthNonD = resultStr.length - 18;
+        const nonDecimal = resultStr.substring(0, lengthNonD);
+        
+        const lengthOfD = resultStr.length - 16;
+        const decimal = resultStr.substring(lengthNonD, lengthOfD);
+    
+        const returnStr = nonDecimal + "." + decimal;
+    
+        this.setState({unZapNum : returnStr}); // display the amount of FEI we have as zapNum
+        //This balance is used in the redeem value to show how much DAI can be redeemed
+     } else if (this.state.walletConnected === false) {
+      //console.log("Wallet not connected.")
+     }
+      }
+  
+      //Checks the current amount of the receipt token approved by the user for interacting with the unZap contract address set by the parent
+      //initializez contract with 'receiptADD' and 'receiptABI' 
+      //calls allowance check of the user's allowance for the 'unZapADD' 
+      //Got to be able to access the Receipt ERC20 in order to send it back and get the FEI
+      //Sets returned value to RallowanceNum
+      const checkReceiptTknApproval  = async () => {
+      if(this.state.walletConnected === true) {
+      const { ethereum } = window;
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      const contractObject = new ethers.Contract(this.props.receiptADD , this.props.receiptABI, provider);
+      //Find the FEI allowance of the user for the zapADD
+      const result = await contractObject.allowance(accounts[0], this.props.unZapADD);
+      const resultStr = result.toString();
+     // console.log(resultStr);
+      //Take our result and make it legible with two decimal points
+      const lengthNonD = resultStr.length - 18;
+      const nonDecimal = resultStr.substring(0, lengthNonD);
+      const lengthOfD = resultStr.length - 16;
+      const decimal = resultStr.substring(lengthNonD, lengthOfD);
+      const returnStr = nonDecimal + "." + decimal;
+      this.setState({RallowanceNum : returnStr}); // //How much FEI is approved for us at this address
+      //This balance is used in the redeem value to show how much DAI can be redeemed
+   } else if (this.state.walletConnected === false) {
+   // console.log("Wallet not connected.")
+   }
+  }
+  
+    //Sends an approval transaction to the receipt token ERC20 to approve the UnZap contract
+    //Again the Unzap contract might be the same as the zap contract, but in a more complicated system it might not be
+    //this leaves the options open
+    //Initializes a contract with 'receiptADD' and 'receiptABI'
+    //Calls approve with the 'unZapADD' and the user input as the arguments
+    const approveUnZapHandler = async () => {
+      let inputStr = this.state.unZapNum;
+  
+      if(this.state.unZapNum.includes(".")){
+        const mintNumSplitArray = this.state.unZapNum.split("."); // First split our value into two strings at the decimal
+        const wholeNum = mintNumSplitArray[0]; // the whole number is simply the part before the decimal point
+        let decimals = mintNumSplitArray[1]; // the decimals are the numbers after the decimal point
+        for(let i = 0; decimals.length < 18 ; i ++){ //If the current decimals are less than 18, add a zero - create an 18 digit long number
+            decimals = decimals + "0";
+        }
+        inputStr = wholeNum + decimals; // set the final input to be the wholeNumber and the decimals added
+        
+        try {
+          const { ethereum } = window;
+          if (ethereum) {
+           const provider = new ethers.providers.Web3Provider(ethereum);
+           const signer = provider.getSigner();
+           const R_CONT = new ethers.Contract(this.props.receiptADD, this.props.receiptABI, signer); //FEI contract initialized
+            console.log("Initialize approval");
+            //approve the zap contract 
+            let Txn = await R_CONT.approve(this.props.unZapADD, inputStr);     
+            console.log("Mining... please wait");
+            await Txn.wait();
+            console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+          } else {
+            console.log("Ethereum object does not exist");
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      } 
+      else {  //If there is no demical point, the user wants to use a solid number
+        //Simply append 18 zeroes to the end of the transaction
+        const str = this.state.unZapNum;
+        inputStr = str + "000000000000000000" 
+  
+        try {
+          const { ethereum } = window;
+          if (ethereum) {
+           const provider = new ethers.providers.Web3Provider(ethereum);
+           const signer = provider.getSigner();
+           const R_CONT = new ethers.Contract(this.props.receiptADD, this.props.receiptABI, signer); //FEI contract initialized
+            console.log("Initialize approval");
+            //approve the zap contract 
+            let Txn = await R_CONT.approve(this.props.unZapADD, inputStr);     
+            console.log("Mining... please wait");
+            await Txn.wait();
+            console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+          } else {
+            console.log("Ethereum object does not exist");
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }    
+    }
+  
+
+      //Execute the unZap function
+      //Initializes a contract with the 'unZapADD' and 'unZapABI'
+      //Calls the 'exitCall' function on that contract, passing through the 'argsExit'
+      const executeUnZapHandler = async () => {
+        let inputStr = this.state.unZapNum;
+    
+        if(this.state.unZapNum.includes(".")){
+          const mintNumSplitArray = this.state.unZapNum.split("."); // First split our value into two strings at the decimal
+          const wholeNum = mintNumSplitArray[0]; // the whole number is simply the part before the decimal point
+          let decimals = mintNumSplitArray[1]; // the decimals are the numbers after the decimal point
+          for(let i = 0; decimals.length < 18 ; i ++){ //If the current decimals are less than 18, add a zero - create an 18 digit long number
+              decimals = decimals + "0";
+          }
+          inputStr = wholeNum + decimals; // set the final input to be the wholeNumber and the decimals added
+  
+        //set up an array that is the same as the args array from the parent
+        //this array is what we will pass as the arguments for the call
+        //This is our exit call so we use argsExit - to leave the opportunity
+        const args = this.props.argsExit; 
+        //set where in the arguments the user input goes
+        args[this.props.indexOfInputExit] = inputStr;
+        console.log(args);
+  
+          try {
+            const { ethereum } = window;
+            if (ethereum) {
+             const provider = new ethers.providers.Web3Provider(ethereum);
+             const signer = provider.getSigner();
+             const unZAP_CONT = new ethers.Contract(this.props.unZapADD, this.props.unZapABI, signer); //FEI contract initialized
+              console.log("Initialize " + this.props.exitCall);
+              //this.props.exitCall is set by the parent to be whatever call this Opp uses to exit the opportunity
+              //'...args' uses the ES6 spread operator to spread the values of the args array as parameters for the contract call
+              let Txn = await unZAP_CONT[this.props.exitCall](...args);     
+              console.log("Mining... please wait");
+              await Txn.wait();
+              console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+            } else {
+              console.log("Ethereum object does not exist");
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        } 
+        else {  //If there is no demical point, the user wants to use a solid number
+          //Simply append 18 zeroes to the end of the transaction
+          const str = this.state.unZapNum;
+          inputStr = str + "000000000000000000" 
+  
+          //set up an array that is the same as the args array from the parent
+          //this array is what we will pass as the arguments for the call
+          //This is our exit call so we use argsExit
+          const args = this.props.argsExit; 
+          //set where in the arguments the user input goes
+          args[this.props.indexOfInputExit] = inputStr;
+          console.log(args);
+  
+          try {
+            const { ethereum } = window;
+            if (ethereum) {
+             const provider = new ethers.providers.Web3Provider(ethereum);
+             const signer = provider.getSigner();
+             const ZAP_CONT = new ethers.Contract(this.props.unZapADD, this.props.unZapABI, signer);
+              console.log("Initialize " + this.props.exitCall);
+              //this.props.enterCall is set by the parent to be whatever call this Opp uses to enter the opportunity
+              //'...args' uses the ES6 spread operator to spread the values of the args array as parameters for the contract call
+              let Txn = await ZAP_CONT[this.props.exitCall](...args);  
+              console.log("Mining... please wait");
+              await Txn.wait();
+              console.log(`Mined, see transaction: https://etherscan.io/tx/${Txn.hash}`);
+            } else {
+              console.log("Ethereum object does not exist");
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }    
+      }
+  
+  
+      //Checks whether or not we need to approve the UnZap or if we need to just go ahead
+    const unZapHandler = () => {
+        
+         //If the receipt allowance is >= the amount of receiptTokens we have
+         if(this.state.RallowanceNum >= this.state.unZapNum){
+              {executeUnZapHandler()}
+           } else { //If the allowanceNum is less than the amount of receipt tokens
+              {approveUnZapHandler()}
+           }
+    }
+  
+  
+    //Purely cosmetic fix on what the buttons say...not what the buttons do.
+    const approveOrUnZap = () => {
+      if(this.state.RallowanceNum >= this.state.zapNum){ 
+        return "UnZap " + this.state.unZapNum + " FEI.";
+        
+      } else { 
+          return "Please approve the use of " + this.state.unZapNum + " receipt tokens. ";
+          
+      }
+    }
+    
+
+
+
 
     //PSM Label
     const OpportunityLabel = () => {
@@ -312,24 +554,31 @@ render() {
           </div>
         
           <p> {this.props.desc} </p>
-          <br></br>
+          <p> {this.props.riskReport}</p>
           
-
-         <div style={{
+          <div style={{
            display: 'flex',
-           justifyContent: 'right',
+           justifyContent: 'center',
            alignItems: 'center',
-           flexwrap: 'wrap',
-           gap: '30px',
            height: '20vh',
           }} >
-          
           <button onClick={OpportunitySiteHandler} className={'Opp-button'}>
             Visit Opportunity Site
           </button>
-      
-          <form classname='formClass' onSubmit={OpportunityHandler}>
-            <label> How much shit are you zapping? </label>
+          </div>
+
+         <div style={{
+           display: 'flex',
+           justifyContent: 'center',
+           alignItems: 'center',
+           flexwrap: 'wrap',
+           gap: '200px',
+           height: '40vh',
+          }} >
+    
+          <form classname='formClass' onSubmit={zapHandler}>
+            <h3> Zap Into Opportunity: </h3>
+            <label> How much shit are you Zapping? </label>
            
             <br></br>
              <input 
@@ -342,6 +591,26 @@ render() {
             <input 
              type="submit" 
              value= {approveOrZap()}
+             />
+         
+           </form>
+         
+          
+          <form classname='formClass' onSubmit={unZapHandler}>
+          <h3> UnZap From Opportunity: </h3>
+            <label> How much shit are you UnZapping? </label>
+           
+            <br></br>
+             <input 
+                type="number" 
+                value= {this.state.unZapNum}
+                onChange={(e) => this.setState({unZapNum: e.target.value})}
+               />
+            <br></br>
+         
+            <input 
+             type="submit" 
+             value= {approveOrUnZap()}
              />
          
            </form>
