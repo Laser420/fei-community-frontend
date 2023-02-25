@@ -2,7 +2,7 @@
 
 I started this repo to store the code here just in case my laptop went up in smoke.
 
-First things first: you may judge my code styling and my failure to program object orientatedly in certain areas but it somewhat works. 
+First things first: you may judge my code styling and my failure to program object orientatedly in certain areas but it works. 
 Second thing: My wacko code commenting strategies work well for me but if it confuses you don't hesitate to contact me on discord. My DM's are open and I am in the Fei Protocol discord. Laser420#4066
 
 If you have any ideas for more features and/or questions unrelated to code, contact Fishy#0007.
